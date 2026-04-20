@@ -1,2 +1,5 @@
-# Apex -> www (safety net; also configure at DNS/CF level)
-https://bestkyc.com/*  https://www.bestkyc.com/:splat  301!
+# Site-internal redirects go here (relative paths only).
+# Example: /old-path /new-path 301
+#
+# Apex -> www redirect is configured at the Cloudflare edge via
+# Rules -> Redirect Rules, not in this file.
