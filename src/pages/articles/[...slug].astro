@@ -1,0 +1,100 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../utils/schema';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+  return articles.map((a) => ({
+    params: { slug: a.id },
+    props: { article: a },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Articles', href: '/articles' },
+  { label: article.data.title, href: `/articles/${article.id}` },
+];
+
+const jsonLd = [
+  breadcrumbSchema(crumbs),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.data.title,
+    description: article.data.dek,
+    datePublished: article.data.published.toISOString(),
+    ...(article.data.updated && {
+      dateModified: article.data.updated.toISOString(),
+    }),
+    ...(article.data.image && {
+      image: new URL(article.data.image.src, Astro.site).toString(),
+    }),
+    author: { '@type': 'Organization', name: article.data.author },
+    publisher: { '@type': 'Organization', name: 'BestKYC' },
+  },
+];
+
+const publishedFmt = article.data.published.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.dek}
+  image={article.data.image?.src}
+  article
+  jsonLd={jsonLd}
+>
+  <article class="mx-auto max-w-3xl px-6 py-20">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <header class="mt-10 border-b border-[var(--color-rule)] pb-10">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+        Article · {publishedFmt}
+      </p>
+      <h1
+        class="mt-6 font-serif text-[length:var(--text-display)] font-medium leading-[var(--text-display--line-height)] tracking-[var(--text-display--letter-spacing)]"
+      >
+        {article.data.title}
+      </h1>
+      <p
+        class="mt-6 text-[length:var(--text-lede)] leading-[var(--text-lede--line-height)] text-[var(--color-ink-muted)]"
+      >
+        {article.data.dek}
+      </p>
+      <p class="mt-8 font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+        By {article.data.author}
+      </p>
+    </header>
+
+    {
+      article.data.image && (
+        <figure class="mt-10">
+          <Image
+            src={article.data.image}
+            alt={article.data.imageAlt ?? ''}
+            widths={[640, 960, 1280, 1600]}
+            sizes="(min-width: 768px) 768px, 100vw"
+            class="w-full"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
+
+    <div class="prose-article mt-10">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../utils/schema';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.published.getTime() - a.data.published.getTime(),
+);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Articles', href: '/articles' },
+];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title="Articles"
+  description="Essays and notes on KYC, KYB, AML, and fraud prevention software."
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Writing"
+    title="Articles."
+    lede="Essays and notes that don't fit inside a ranking. Read these when you're trying to figure out what to buy, not which vendor to pick."
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    {
+      articles.length === 0 ? (
+        <p class="mt-10 text-[var(--color-ink-muted)]">No articles yet.</p>
+      ) : (
+        <ol class="mt-10 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+          {articles.map((a) => (
+            <li>
+              <a
+                href={`/articles/${a.id}`}
+                class="group grid gap-5 py-8 transition-colors hover:bg-[var(--color-surface)] sm:grid-cols-[220px_1fr]"
+              >
+                <div class="aspect-[16/9] overflow-hidden bg-[var(--color-surface)]">
+                  {a.data.image ? (
+                    <Image
+                      src={a.data.image}
+                      alt={a.data.imageAlt ?? ''}
+                      widths={[320, 480, 640]}
+                      sizes="220px"
+                      class="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                    />
+                  ) : null}
+                </div>
+                <div>
+                  <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                    {fmt(a.data.published)}
+                  </p>
+                  <h2 class="mt-2 font-serif text-2xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+                    {a.data.title}
+                  </h2>
+                  <p class="mt-2 max-w-2xl text-[var(--color-ink-muted)]">
+                    {a.data.dek}
+                  </p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </section>
+</BaseLayout>

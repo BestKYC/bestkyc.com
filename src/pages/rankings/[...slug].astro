@@ -1,0 +1,154 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Badge from '../../components/Badge.astro';
+import RankingTable from '../../components/RankingTable.astro';
+import type { RankingEntry } from '../../components/RankingTable.astro';
+import { CATEGORIES, type CategorySlug } from '../../consts';
+import { breadcrumbSchema } from '../../utils/schema';
+
+export async function getStaticPaths() {
+  const rankings = await getCollection('rankings', ({ data }) => !data.draft);
+  return rankings.map((r) => ({
+    params: { slug: r.id },
+    props: { ranking: r },
+  }));
+}
+
+const { ranking } = Astro.props;
+const r = ranking.data;
+const { Content } = await render(ranking);
+
+const category = CATEGORIES[r.category as CategorySlug];
+
+const pricingLabels: Record<string, string> = {
+  'per-verification': 'Per verification',
+  subscription: 'Subscription',
+  enterprise: 'Enterprise, custom',
+  custom: 'Custom',
+  unknown: '—',
+};
+
+const resolved: RankingEntry[] = await Promise.all(
+  r.entries.map(async (entry) => {
+    const vendor = await getEntry('vendors', entry.vendor.id);
+    return {
+      rank: entry.rank,
+      vendor: vendor?.data.name ?? entry.vendor.id,
+      pitch: entry.note ?? vendor?.data.summary ?? '',
+      bestFor: entry.bestFor,
+      pricing: vendor ? pricingLabels[vendor.data.pricingModel] : undefined,
+      href: vendor ? `/vendors/${vendor.id}` : '#',
+      pick: entry.pick,
+      ctaLabel: 'See profile →',
+    };
+  }),
+);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Rankings', href: '/rankings' },
+  { label: r.title, href: `/rankings/${ranking.id}` },
+];
+
+const jsonLd = [
+  breadcrumbSchema(crumbs),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: r.title,
+    description: r.description,
+    numberOfItems: resolved.length,
+    ...(r.image && {
+      image: new URL(r.image.src, Astro.site).toString(),
+    }),
+    itemListElement: resolved.map((e) => ({
+      '@type': 'ListItem',
+      position: e.rank,
+      name: e.vendor,
+      url: new URL(e.href, Astro.site).toString(),
+    })),
+  },
+];
+
+const publishedFmt = r.published.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={r.title}
+  description={r.description}
+  image={r.image?.src}
+  article
+  jsonLd={jsonLd}
+>
+  <Hero
+    eyebrow={`Ranking · ${category.label} · ${r.year}`}
+    title={r.title}
+    lede={r.description}
+  />
+
+  {
+    r.image && (
+      <figure class="mx-auto mt-10 max-w-4xl px-6">
+        <Image
+          src={r.image}
+          alt={r.imageAlt ?? r.title}
+          widths={[640, 960, 1280, 1456]}
+          sizes="(min-width: 896px) 896px, 100vw"
+          class="w-full"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    )
+  }
+
+  <article class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <div class="mt-8 flex flex-wrap items-center gap-2 border-b border-[var(--color-rule)] pb-6">
+      <Badge tone="neutral">{resolved.length} vendors</Badge>
+      <Badge tone="neutral">Published {publishedFmt}</Badge>
+      {r.methodology && <Badge tone="accent">Weighted for compliance</Badge>}
+    </div>
+
+    <div class="prose-article mt-10">
+      <Content />
+    </div>
+
+    <div class="mt-12">
+      <RankingTable entries={resolved} />
+    </div>
+
+    <aside class="mt-16 border-t border-[var(--color-rule)] pt-8 text-sm text-[var(--color-ink-muted)]">
+      <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+        How we ranked these
+      </p>
+      <p class="mt-2">
+        {r.methodology ? `${r.methodology} ` : ''}
+        See our{' '}
+        <a
+          href="/methodology"
+          class="text-[var(--color-brand-700)] underline underline-offset-4 hover:text-[var(--color-brand-900)]"
+        >
+          methodology
+        </a>
+        {' '}for the six criteria behind every ranking, and our{' '}
+        <a
+          href="/disclosures"
+          class="text-[var(--color-brand-700)] underline underline-offset-4 hover:text-[var(--color-brand-900)]"
+        >
+          disclosures
+        </a>
+        {' '}for how we handle editorial conflicts.
+      </p>
+    </aside>
+  </article>
+</BaseLayout>

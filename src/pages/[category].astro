@@ -1,0 +1,204 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Badge from '../components/Badge.astro';
+import { CATEGORIES, type CategorySlug } from '../consts';
+import { breadcrumbSchema } from '../utils/schema';
+import kycImage from '../content/articles/images/kyc_category.png';
+import kybImage from '../content/articles/images/kyb_category.png';
+import amlImage from '../content/articles/images/aml_category.png';
+import fraudImage from '../content/articles/images/fraud_category.png';
+
+const categoryImages: Record<CategorySlug, typeof kycImage> = {
+  kyc: kycImage,
+  kyb: kybImage,
+  aml: amlImage,
+  fraud: fraudImage,
+};
+
+export function getStaticPaths() {
+  return Object.values(CATEGORIES).map((c) => ({
+    params: { category: c.slug },
+    props: { category: c },
+  }));
+}
+
+const { category } = Astro.props;
+const heroImage = categoryImages[category.slug as CategorySlug];
+const heroAlt = `BestKYC — ${category.label}`;
+
+const relatedArticles = (
+  await getCollection(
+    'articles',
+    ({ data }) =>
+      !data.draft && data.categories.includes(category.slug as CategorySlug),
+  )
+).sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+
+const categoryRankings = (
+  await getCollection(
+    'rankings',
+    ({ data }) => !data.draft && data.category === category.slug,
+  )
+).sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+
+const latestRanking = categoryRankings[0];
+const olderRankings = categoryRankings.slice(1);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: category.label, href: `/${category.slug}` },
+];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title={`${category.label} rankings`}
+  description={category.description}
+  image={heroImage.src}
+  noindex={!latestRanking}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow={`Category · ${category.slug.toUpperCase()}`}
+    title={category.label}
+    lede={category.description}
+  />
+
+  <figure class="mx-auto mt-10 max-w-4xl px-6">
+    <Image
+      src={heroImage}
+      alt={heroAlt}
+      widths={[640, 960, 1280, 1456]}
+      sizes="(min-width: 896px) 896px, 100vw"
+      class="w-full"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </figure>
+
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    {
+      relatedArticles.length > 0 && (
+        <div class="mt-10 border-b border-[var(--color-rule)] pb-10">
+          <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+            Start here
+          </h2>
+          <ul class="mt-6 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+            {relatedArticles.map((a) => (
+              <li>
+                <a
+                  href={`/articles/${a.id}`}
+                  class="group grid gap-4 py-6 transition-colors hover:bg-[var(--color-surface)] sm:grid-cols-[180px_1fr]"
+                >
+                  <div class="aspect-[16/9] overflow-hidden bg-[var(--color-surface)]">
+                    {a.data.image ? (
+                      <Image
+                        src={a.data.image}
+                        alt={a.data.imageAlt ?? ''}
+                        widths={[280, 400]}
+                        sizes="180px"
+                        class="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                      />
+                    ) : null}
+                  </div>
+                  <div>
+                    <p class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                      Article · {fmt(a.data.published)}
+                    </p>
+                    <h3 class="mt-2 font-serif text-xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+                      {a.data.title}
+                    </h3>
+                    <p class="mt-2 max-w-2xl text-sm text-[var(--color-ink-muted)]">
+                      {a.data.dek}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      latestRanking ? (
+        <div class="mt-10">
+          <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+            Current ranking
+          </h2>
+          <a
+            href={`/rankings/${latestRanking.id}`}
+            class="group mt-6 block border border-[var(--color-rule)] p-8 transition-colors hover:border-[var(--color-ink)]"
+          >
+            <div class="flex flex-wrap items-center gap-2">
+              <Badge tone="accent">Latest · {latestRanking.data.year}</Badge>
+              <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                {fmt(latestRanking.data.published)}
+              </span>
+            </div>
+            <h3 class="mt-4 font-serif text-3xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+              {latestRanking.data.title}
+            </h3>
+            <p class="mt-3 max-w-2xl text-[var(--color-ink-muted)]">
+              {latestRanking.data.description}
+            </p>
+            <p class="mt-4 font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] group-hover:text-[var(--color-brand-700)]">
+              Read the ranking →
+            </p>
+          </a>
+
+          {olderRankings.length > 0 && (
+            <div class="mt-10">
+              <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+                Previous rankings
+              </h2>
+              <ul class="mt-6 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+                {olderRankings.map((r) => (
+                  <li>
+                    <a
+                      href={`/rankings/${r.id}`}
+                      class="group grid gap-2 py-6 transition-colors hover:bg-[var(--color-surface)]"
+                    >
+                      <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                        {r.data.year} · {fmt(r.data.published)}
+                      </span>
+                      <h3 class="font-serif text-xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+                        {r.data.title}
+                      </h3>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div class="mt-10 border border-dashed border-[var(--color-rule)] p-12 text-center">
+          <Badge tone="accent">Coming soon</Badge>
+          <h2 class="mt-6 font-serif text-2xl font-medium tracking-tight">
+            We haven't published a {category.label} ranking yet.
+          </h2>
+          <p class="mt-4 text-[var(--color-ink-muted)]">
+            We will. For now, read how we evaluate anything.
+          </p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href="/methodology"
+              class="inline-flex items-center rounded-sm border border-[var(--color-rule)] px-5 py-3 text-sm font-medium text-[var(--color-ink)] transition-colors hover:border-[var(--color-ink)]"
+            >
+              How we evaluate
+            </a>
+          </div>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

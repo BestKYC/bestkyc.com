@@ -1,0 +1,26 @@
+---
+interface Props {
+  value: number;
+  max?: number;
+}
+
+const { value, max = 5 } = Astro.props;
+const clamped = Math.max(0, Math.min(value, max));
+const pct = (clamped / max) * 100;
+---
+
+<div class="flex items-baseline gap-2 font-mono">
+  <span class="text-xl font-medium text-[var(--color-ink)]">
+    {clamped.toFixed(1)}
+  </span>
+  <span class="text-xs text-[var(--color-ink-subtle)]">/ {max}</span>
+  <span
+    class="ml-2 h-1 w-16 overflow-hidden rounded-xs bg-[var(--color-rule)]"
+    aria-hidden="true"
+  >
+    <span
+      class="block h-full bg-[var(--color-brand-700)]"
+      style={`width: ${pct}%`}
+    ></span>
+  </span>
+</div>

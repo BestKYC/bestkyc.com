@@ -1,0 +1,107 @@
+---
+import { SITE, CATEGORIES } from '../consts';
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
+---
+
+<header class="border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
+    <a
+      href="/"
+      class="group flex items-center gap-3"
+      aria-label={`${SITE.name} home`}
+    >
+      <svg
+        viewBox="0 0 32 32"
+        width="28"
+        height="28"
+        aria-hidden="true"
+        class="shrink-0"
+      >
+        <rect width="32" height="32" rx="6" fill="var(--color-brand-700)" />
+        <g fill="var(--color-paper)">
+          <rect x="5" y="6" width="4" height="20" rx="0.5" />
+          <rect x="14" y="11" width="4" height="15" rx="0.5" />
+          <rect x="23" y="18" width="4" height="8" rx="0.5" />
+        </g>
+      </svg>
+      <span
+        class="font-serif text-xl font-medium tracking-tight text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-brand-700)]"
+      >
+        BestKYC
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex items-center gap-6 font-mono text-xs uppercase tracking-[0.16em]" role="list">
+        {
+          Object.values(CATEGORIES).map((c) => (
+            <li>
+              <a
+                href={`/${c.slug}`}
+                aria-current={isActive(`/${c.slug}`) ? 'page' : undefined}
+                class:list={[
+                  'text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]',
+                  isActive(`/${c.slug}`) && 'text-[var(--color-ink)]',
+                ]}
+              >
+                {c.slug}
+              </a>
+            </li>
+          ))
+        }
+        <li aria-hidden="true" class="h-4 w-px bg-[var(--color-rule)]"></li>
+        <li>
+          <a
+            href="/vendors"
+            aria-current={isActive('/vendors') ? 'page' : undefined}
+            class:list={[
+              'text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]',
+              isActive('/vendors') && 'text-[var(--color-ink)]',
+            ]}
+          >
+            Vendors
+          </a>
+        </li>
+        <li>
+          <a
+            href="/articles"
+            aria-current={isActive('/articles') ? 'page' : undefined}
+            class:list={[
+              'text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]',
+              isActive('/articles') && 'text-[var(--color-ink)]',
+            ]}
+          >
+            Articles
+          </a>
+        </li>
+        <li>
+          <a
+            href="/why"
+            aria-current={isActive('/why') ? 'page' : undefined}
+            class:list={[
+              'text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]',
+              isActive('/why') && 'text-[var(--color-ink)]',
+            ]}
+          >
+            Why
+          </a>
+        </li>
+        <li>
+          <a
+            href="/methodology"
+            aria-current={isActive('/methodology') ? 'page' : undefined}
+            class:list={[
+              'text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]',
+              isActive('/methodology') && 'text-[var(--color-ink)]',
+            ]}
+          >
+            Methodology
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

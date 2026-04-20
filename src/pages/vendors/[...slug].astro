@@ -1,0 +1,208 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Badge from '../../components/Badge.astro';
+import { CATEGORIES, type CategorySlug } from '../../consts';
+import {
+  breadcrumbSchema,
+  softwareAppSchema,
+} from '../../utils/schema';
+
+export async function getStaticPaths() {
+  const vendors = await getCollection('vendors');
+  return vendors.map((v) => ({
+    params: { slug: v.id },
+    props: { vendor: v },
+  }));
+}
+
+const { vendor } = Astro.props;
+const { Content } = await render(vendor);
+const v = vendor.data;
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Vendors', href: '/vendors' },
+  { label: v.name, href: `/vendors/${vendor.id}` },
+];
+
+const primaryCategory = CATEGORIES[v.categories[0] as CategorySlug];
+
+const jsonLd = [
+  breadcrumbSchema(crumbs),
+  softwareAppSchema({
+    name: v.name,
+    url: v.website,
+    category: primaryCategory.label,
+    description: v.summary,
+  }),
+];
+
+const pricingLabels: Record<typeof v.pricingModel, string> = {
+  'per-verification': 'Per verification',
+  subscription: 'Subscription',
+  enterprise: 'Enterprise, custom',
+  custom: 'Custom',
+  unknown: 'Not published',
+};
+
+const claimSubject = encodeURIComponent(`Claim ${v.name} profile`);
+---
+
+<BaseLayout
+  title={`${v.name} — Vendor profile`}
+  description={v.summary}
+  jsonLd={jsonLd}
+>
+  <article class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <header class="mt-8 border-b border-[var(--color-rule)] pb-10">
+      <div class="flex flex-wrap items-center gap-2">
+        {
+          v.categories.map((slug) => (
+            <Badge>{CATEGORIES[slug as CategorySlug].label}</Badge>
+          ))
+        }
+      </div>
+      <h1
+        class="mt-6 font-serif text-[length:var(--text-display)] font-medium leading-[var(--text-display--line-height)] tracking-[var(--text-display--letter-spacing)]"
+      >
+        {v.name}
+      </h1>
+      <p
+        class="mt-4 max-w-2xl text-[length:var(--text-lede)] leading-[var(--text-lede--line-height)] text-[var(--color-ink-muted)]"
+      >
+        {v.summary}
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href={v.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center rounded-sm bg-[var(--color-brand-700)] px-5 py-3 text-sm font-medium text-[var(--color-paper)] transition-colors hover:bg-[var(--color-brand-900)]"
+        >
+          Visit website
+          <span aria-hidden="true" class="ml-2">↗</span>
+        </a>
+      </div>
+    </header>
+
+    <dl
+      class="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-[var(--color-rule)] bg-[var(--color-rule)] text-sm sm:grid-cols-4"
+    >
+      {
+        v.headquarters && (
+          <div class="bg-[var(--color-paper)] p-4">
+            <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+              Headquarters
+            </dt>
+            <dd class="mt-2 text-[var(--color-ink)]">{v.headquarters}</dd>
+          </div>
+        )
+      }
+      {
+        v.foundedYear && (
+          <div class="bg-[var(--color-paper)] p-4">
+            <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+              Founded
+            </dt>
+            <dd class="mt-2 text-[var(--color-ink)]">{v.foundedYear}</dd>
+          </div>
+        )
+      }
+      <div class="bg-[var(--color-paper)] p-4">
+        <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+          Pricing
+        </dt>
+        <dd class="mt-2 text-[var(--color-ink)]">
+          {pricingLabels[v.pricingModel]}
+        </dd>
+      </div>
+      {
+        v.regions.length > 0 && (
+          <div class="bg-[var(--color-paper)] p-4">
+            <dt class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+              Regions
+            </dt>
+            <dd class="mt-2 text-[var(--color-ink)]">{v.regions.join(', ')}</dd>
+          </div>
+        )
+      }
+    </dl>
+
+    {
+      v.teamRole && (
+        <aside
+          class="mt-10 border-l-2 border-[var(--color-brand-700)] bg-[var(--color-surface)] px-6 py-5"
+          role="note"
+          aria-labelledby="conflict-heading"
+        >
+          <p
+            id="conflict-heading"
+            class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]"
+          >
+            Editorial conflict
+          </p>
+          {v.teamRole === 'operator' ? (
+            <p class="mt-3 text-sm text-[var(--color-ink-muted)]">
+              BestKYC is operated out of {v.name}. The team writing this site
+              is employed by or works with {v.name}. Reviews of {v.name} are
+              not written by anyone currently on the {v.name} team, and the
+              conflict is listed at the top of every review where it applies.{' '}
+              <a
+                href="/disclosures"
+                class="text-[var(--color-brand-700)] underline underline-offset-4 hover:text-[var(--color-brand-900)]"
+              >
+                See disclosures.
+              </a>
+            </p>
+          ) : (
+            <p class="mt-3 text-sm text-[var(--color-ink-muted)]">
+              Members of the BestKYC editorial team currently work at,
+              previously worked at, or consult for {v.name}. When {v.name}{' '}
+              appears in a ranking or review, the page is written by someone
+              without that tie, and the conflict is listed at the top of the
+              page.{' '}
+              <a
+                href="/disclosures"
+                class="text-[var(--color-brand-700)] underline underline-offset-4 hover:text-[var(--color-brand-900)]"
+              >
+                See disclosures.
+              </a>
+            </p>
+          )}
+        </aside>
+      )
+    }
+
+    <div class="prose-article mt-12">
+      <Content />
+    </div>
+
+    <aside
+      class="mt-16 border-l-2 border-[var(--color-brand-700)] bg-[var(--color-surface)] px-6 py-6"
+      aria-labelledby="claim-heading"
+    >
+      <p
+        id="claim-heading"
+        class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]"
+      >
+        Own this vendor?
+      </p>
+      <p class="mt-3 text-[var(--color-ink-muted)]">
+        If you work at {v.name}, you can claim this profile to correct facts,
+        update the summary, or request additions.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <a
+          href={`/contact?subject=${claimSubject}`}
+          class="inline-flex items-center rounded-sm border border-[var(--color-ink)] px-4 py-2 text-sm font-medium text-[var(--color-ink)] transition-colors hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
+        >
+          Claim this profile →
+        </a>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>

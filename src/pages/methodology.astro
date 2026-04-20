@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../utils/schema';
+import methodologyImage from '../content/articles/images/Methodology_framework.png';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Methodology', href: '/methodology' },
+];
+
+const imageAlt = 'BestKYC — how we evaluate KYC, KYB, AML, and fraud prevention software';
+
+const criteria = [
+  {
+    name: 'Voice from the public',
+    detail:
+      "What the practitioners actually using the software say. We read the forums, the LinkedIn posts, the Reddit threads, and we talk to the people in our community who live with these tools every day. A vendor's case studies tell us what the vendor wants us to think. The voice from their customers tells us what to think. We don't use G2 or Gartner star averages — on those sites, the sample is whichever customers the vendor's CSM team contacted with a gift card, not a random one.",
+  },
+  {
+    name: 'Pricing',
+    detail:
+      'Is the price on the website, or is it a phone call. What the minimum commitment is. What the bill actually is at our volume. We have yet to see a ranking change because a vendor had pretty pricing, but we have seen procurement cycles double because pricing took three calls to nail down.',
+  },
+  {
+    name: 'Experience and accuracy',
+    detail:
+      'How the flow feels on a mid-range Android with a bad camera. Drop-off at each step. Acceptance rates — how often a real user gets rejected. False accepts, where a fraudster gets through. These are the numbers that decide whether the funnel grows or shrinks.',
+  },
+  {
+    name: 'Sales process',
+    detail:
+      "We get on a call with every vendor and watch how they sell. What gets promised on the call versus what shows up in production. How much of the time is spent on discovery rather than pitching. Whether the rep's answers feel like product knowledge or sales script. How long from first contact to a useful conversation. The first sales call is the first integration test — if a vendor can't accurately describe the limits of their own product in 30 minutes, the next 18 months will be harder than they need to be.",
+  },
+  {
+    name: 'Support and customer service',
+    detail:
+      'How long it takes to get a real person. Whether the support engineer can fix the problem or just takes a ticket. What the vendor does when the webhook goes down at 3am and your onboarding queue backs up behind it. Dedicated CSM vs. a rotating pool.',
+  },
+  {
+    name: 'Integration',
+    detail:
+      'Time from signed contract to first real verification in your production flow. SDK quality. API ergonomics. Sandbox maturity. Whether the webhook payload has the fields you need or you have to make two extra calls to get them.',
+  },
+  {
+    name: 'Compliance',
+    detail:
+      "Whether the vendor lets you pass your regulator's audit. Depending on your jurisdiction that means different things: FCA, BaFin, MAS, FINMA, OCC, OFAC. SOC 2 and ISO 27001 as table stakes. Sanctions, PEPs, and adverse media where they belong. A usable audit trail. Something sensible to say about DORA.",
+  },
+];
+---
+
+<BaseLayout
+  title="Methodology"
+  description="How we evaluate KYC, KYB, AML, and fraud prevention software — the seven criteria we always come back to, and how the weights shift by project."
+  image={methodologyImage.src}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Methodology"
+    title="How we evaluate."
+    lede="Every few weeks one of us is picking software for a new project at work — a bank onboarding flow, an ecommerce fraud stack, a marketplace KYB process. We write down what we learned. Those notes turn into the rankings on this site. The weights change by project. The criteria don't."
+  />
+
+  <figure class="mx-auto mt-10 max-w-3xl px-6">
+    <Image
+      src={methodologyImage}
+      alt={imageAlt}
+      widths={[640, 960, 1280, 1456]}
+      sizes="(min-width: 768px) 768px, 100vw"
+      class="w-full"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </figure>
+
+  <aside
+    class="mx-auto mt-10 max-w-3xl border-l-2 border-[var(--color-brand-700)] bg-[var(--color-surface)] px-6 py-5"
+    role="note"
+  >
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+      Before you pick
+    </p>
+    <p class="mt-2 text-sm text-[var(--color-ink-muted)]">
+      If you're not sure whether you need KYC or ID verification software,
+      start with{' '}
+      <a
+        href="/articles/kyc-vs-id-verification"
+        class="text-[var(--color-brand-700)] underline underline-offset-4 hover:text-[var(--color-brand-900)]"
+      >
+        KYC vs ID verification: the same software, for different reasons
+      </a>
+      . The criteria below change weight depending on which side of that line
+      you're on.
+    </p>
+  </aside>
+
+  <article class="mx-auto max-w-3xl px-6 py-16 prose-editorial">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <p class="mt-10 text-[var(--color-ink-muted)]">
+      What we look at depends on why we're looking. Picking KYC for a bank
+      onboarding flow is not the same as picking an ID check for an ecommerce
+      cart. A regulator-driven project puts compliance above conversion. A
+      fraud-driven project puts it the other way around. So the weights shift.
+      The criteria don't.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      These are the seven we always end up back at.
+    </p>
+
+    <h2 class="mt-16 font-serif text-3xl font-medium tracking-tight">
+      The seven criteria
+    </h2>
+    <ol class="mt-8 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+      {
+        criteria.map((c, i) => (
+          <li class="grid grid-cols-[auto_1fr] items-start gap-6 py-6">
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+              0{i + 1}
+            </span>
+            <div>
+              <h3 class="font-serif text-xl font-medium tracking-tight">{c.name}</h3>
+              <p class="mt-2 text-[var(--color-ink-muted)]">{c.detail}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h2 class="mt-16 font-serif text-3xl font-medium tracking-tight">
+      How the weights shift
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      For a bank onboarding flow, compliance is non-negotiable. If a vendor
+      doesn't pass your regulator's audit, nothing else matters. Experience and
+      accuracy matter a lot. Pricing and support matter enough to break ties.
+    </p>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      For an ecommerce fraud stack, it's flipped. Experience and accuracy are
+      non-negotiable — if the flow doesn't convert, the category stops
+      existing. Pricing and support matter a lot. Compliance might not be
+      relevant at all, because no regulator is asking for your audit.
+    </p>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      Voice from the public shifts least. It's the first signal we look at on
+      every project, because the people already using a vendor are running the
+      experiment you're about to run.
+    </p>
+
+    <h2 class="mt-16 font-serif text-3xl font-medium tracking-tight">
+      Who ranks
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      We are the people picking this software. Every ranking has at least one
+      practitioner on the byline — someone who has recently run, or is
+      currently running, the relevant process in production at their day job.
+      Usually a compliance lead, a fraud strategist, or a product owner. Their
+      bio and any conflicts appear at the bottom of every review they touch.
+    </p>
+
+    <h2 class="mt-16 font-serif text-3xl font-medium tracking-tight">
+      What we don't do
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      We don't run benchmarks at scale from a lab. We use the numbers from real
+      production flows, from the people running them, and we check the
+      vendor's claims against that. Where we have our own test corpus for a
+      category, we use it — but we won't pretend we have a setup that mirrors
+      your onboarding volume, because we don't.
+    </p>
+
+    <p class="mt-12 text-sm text-[var(--color-ink-subtle)]">
+      This page will keep getting refined as we publish more rankings.
+    </p>
+  </article>
+</BaseLayout>

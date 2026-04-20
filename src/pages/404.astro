@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you are looking for does not exist."
+  noindex
+>
+  <section class="mx-auto flex min-h-[60vh] max-w-2xl flex-col justify-center px-6 py-20 text-center">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+      404
+    </p>
+    <h1 class="mt-4 font-serif text-5xl font-medium tracking-tight">
+      We don't have this page.
+    </h1>
+    <p class="mt-6 text-[length:var(--text-lede)] leading-[var(--text-lede--line-height)] text-[var(--color-ink-muted)]">
+      Either we moved it, or the URL got mistyped. The home page has everything.
+    </p>
+    <div class="mt-10 flex justify-center gap-3">
+      <a
+        href="/"
+        class="inline-flex items-center rounded-sm bg-[var(--color-brand-700)] px-5 py-3 text-sm font-medium text-[var(--color-paper)] transition-colors hover:bg-[var(--color-brand-900)]"
+      >
+        Home
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,159 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../utils/schema';
+import disclosuresImage from '../content/articles/images/disclosures.png';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Disclosures', href: '/disclosures' },
+];
+
+const imageAlt = 'BestKYC — disclosures and editorial independence';
+
+const conflicted = (await getCollection('vendors'))
+  .filter((v) => v.data.teamRole)
+  .sort((a, b) => {
+    if (a.data.teamRole === 'operator') return -1;
+    if (b.data.teamRole === 'operator') return 1;
+    return a.data.name.localeCompare(b.data.name);
+  });
+---
+
+<BaseLayout
+  title="Disclosures"
+  description="We don't accept paid rankings. Several of us work with these vendors — that's why the site exists, and this page explains how we keep the two apart."
+  image={disclosuresImage.src}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Editorial"
+    title="Disclosures."
+    lede="Two things that need saying together. We don't accept payment for placement, ever. And several of us have worked with the vendors we rank — as employees, consultants, or customers. The second is the reason this site exists. The first is how we keep it honest."
+  />
+
+  <figure class="mx-auto mt-10 max-w-3xl px-6">
+    <Image
+      src={disclosuresImage}
+      alt={imageAlt}
+      widths={[640, 960, 1280, 1456]}
+      sizes="(min-width: 768px) 768px, 100vw"
+      class="w-full"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </figure>
+
+  <article class="mx-auto max-w-3xl px-6 py-16 prose-editorial">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      Independence
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      BestKYC is an independent side project run by its editorial team,
+      outside our day jobs. It is not owned, operated, or affiliated with any
+      vendor we cover. The only reason any vendor gets named in a disclosure
+      on this site is that someone on the team has a personal tie to them —
+      and in every such case, they are not the one writing about that vendor.
+    </p>
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      No paid rankings
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      No vendor pays us for placement. No vendor pays us for a favorable
+      review. No vendor pays us at all for editorial — not for inclusion in a
+      ranking, not for position on a list, not for the order of mentions in a
+      comparison. This is not negotiable. If you're a vendor reading this
+      wondering about a "partnership", the answer is no before you finish the
+      email.
+    </p>
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      The reason this site exists
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      Several of us work, or have worked, or consult for companies in these
+      categories. That's the whole reason the site exists. We have already
+      done the evaluation work — at our day jobs, for real projects, with real
+      budgets and real timelines. Everything published here started as a note
+      someone on the team took during that process, cleaned up for a reader
+      who isn't inside our company.
+    </p>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      The readers we have in mind are people like us. Compliance leads, fraud
+      strategists, product owners. People about to run the same
+      vendor-evaluation exercise we already ran last quarter, or last year, or
+      last week. The goal is to save them the first month of it.
+    </p>
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      Where the editorial team has ties
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      People on the editorial team currently work at, previously worked at,
+      or consult for the vendors below. When any of them appears in a
+      ranking or review, the page is written by someone without that tie,
+      and the conflict is listed at the top of the page.
+    </p>
+    <ul class="mt-6 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+      {
+        conflicted.map((v) => (
+          <li class="grid grid-cols-[1fr_auto] items-center gap-4 py-4">
+            <div>
+              <a
+                href={`/vendors/${v.id}`}
+                class="font-serif text-lg font-medium text-[var(--color-ink)] hover:text-[var(--color-brand-700)]"
+              >
+                {v.data.name}
+              </a>
+              <p class="mt-1 text-sm text-[var(--color-ink-muted)]">
+                {v.data.teamRole === 'operator'
+                  ? 'Operates this site.'
+                  : 'Current, past, or advisory ties on the team.'}
+              </p>
+            </div>
+            <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+              {v.data.teamRole === 'operator' ? 'Operator' : 'Contributor'}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      Reviewer conflicts
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      Because several of us work at, used to work at, or advise companies in
+      these categories, most reviews carry a conflict to disclose. When a
+      reviewer has a current or recent tie to a vendor they'd otherwise be
+      ranking, someone else writes that review, and the conflict is listed at
+      the top of the page. No review is written by someone who would
+      directly benefit from the ranking.
+    </p>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      Rankings work slightly differently. A ranking is a collective editorial
+      decision rather than the work of one author. For each conflicted vendor
+      on a list, team members with a tie to that vendor recuse from setting
+      its position, and the rest of the team adjudicates. The specific
+      conflicts for each ranking are disclosed at the top of the ranking
+      page.
+    </p>
+
+    <h2 class="mt-12 font-serif text-3xl font-medium tracking-tight">
+      Affiliate links
+    </h2>
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      Some outbound links to vendors carry referral parameters. We lock the
+      rankings before anyone on the commercial side sees them, so whatever
+      commission any of those links pays doesn't change what gets ranked
+      where. Adding or removing a referral link after a ranking publishes
+      doesn't change the rank.
+    </p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+title: "KYC vs ID verification: the same software, for different reasons"
+dek: "On the outside they're the same product. On the inside they're being bought for opposite reasons, and the reason changes what 'good' looks like."
+author: "BestKYC Editorial"
+categories: ["kyc", "fraud"]
+image: ./images/kyc-vs-id-verification.png
+imageAlt: "BestKYC — KYC vs ID verification"
+published: 2026-04-19
+---
+
+The first time I watched the compliance team and the fraud team at the same company argue over which vendor to pick, I thought they were arguing about the wrong thing. They agreed on the shortlist. They'd sat through the demos together. What they couldn't agree on was what the product was for.
+
+KYC software and ID verification software look identical from the outside. They check a document. They check a face. They return a signal. They log it. When you shortlist for one, the same ten vendors show up on the list for the other. At least half will tell you they do both.
+
+And yet they're different products. The same box is being sold to two different buyers, for two different reasons, and the reason you're buying it changes what "good" looks like.
+
+## The compliance buyer
+
+Start with the compliance side. A compliance officer at a neobank, a broker, or a crypto exchange buys what the industry calls KYC — short for Know Your Customer. The reason they're buying is that a regulator — FCA, BaFin, FINMA, MAS, pick your jurisdiction — wrote a rule that says you cannot onboard a customer without verifying their identity in a specific way. If you don't, you get fined. You get a consent order. In the worst case you lose your license.
+
+The compliance officer's success metric is: does this pass the next audit?
+
+Everything else follows from that metric. They want an audit trail they can hand to a regulator without blushing. They want case management for the 3% of onboardings that go to manual review. They want sanctions, PEPs, and adverse media either baked in or cleanly wired up. They want the vendor to have SOC 2, ISO 27001, and increasingly something to say about DORA.
+
+Drop-offs at the ID step are a cost, but they're not a KPI. If a real user gets rejected, that's regrettable, but it's not what gets the compliance officer fired. If a fraudster gets through and the regulator finds out, that is what gets them fired.
+
+## The fraud buyer
+
+Now the other side. A fraud strategist at a marketplace, or an ecommerce platform past some dollar threshold, or a dating app, or a rental platform, or a reseller marketplace fighting a mule problem. No regulator is telling them they must verify a user's face against their driver's license. They're doing it because fraud costs them money. Or because reseller abuse kills the platform. Or because they need to age-gate something. Or because their insurer started asking questions.
+
+Their success metric is: fraud prevented, minus friction caused.
+
+That metric changes everything. They care about conversion. They care about drop-off at each step of the flow. They care about how long the check takes on a mid-range Android with a bad camera. They care about liveness strength because the only thing worse than letting a fraudster through is making a real customer take a selfie and then letting one through anyway.
+
+They might not care about PEP screening at all. They might not need case management — if the signal is bad, block the transaction and move on. An audit trail is nice because it helps the chargeback case, but it's not the thing they're buying.
+
+## Same product, two ways
+
+So: the same product, bought two ways.
+
+The obvious next question is why this matters, if both can be done by the same vendor. The reason is that the vendor started from one of the two buyers, and it shows. Walk through any of the major vendors with a knowledgeable eye and you can usually tell which side of the fence they grew up on. The compliance-first vendors have beautiful case management queues and mediocre drop-off rates. The fraud-first vendors have fast SDKs and a "compliance module" that, on inspection, turns out to be a CSV export bolted onto an API.
+
+There are vendors that do both well. There aren't many.
+
+## What happens when you buy the wrong side
+
+If you're a neobank and you pick the best ID verification vendor by mobile conversion, you'll fail your first BaFin audit because the control documentation isn't there and the case management doesn't cover the scenarios a bank examiner asks about.
+
+If you're a marketplace and you pick the best KYC vendor by audit defensibility, your onboarding conversion will drop eight points overnight and you'll spend a quarter trying to figure out why. The answer, when you eventually find it, is that the SDK you bought was designed under the assumption that the user really wants to complete this flow because their bank account depends on it. Your users aren't opening a bank account. They're trying to list a pair of sneakers.
+
+The subtler trap is that most vendors will sell you whichever product you ask about. If you say "we need KYC," you get demoed the compliance features. If you say "we need ID verification," you get demoed the conversion features. It can take three months of being live before you notice that the thing you bought is mostly the thing you didn't want, with some of the thing you did want bolted on.
+
+## A useful question to ask
+
+When you're evaluating a vendor, ask them to walk you through a day in the life of their customer that's most like you. Compliance-first vendors will talk about their most regulated banking customer and how the audit went. Fraud-first vendors will talk about their fastest-scaling marketplace customer and what happened to their drop-off numbers.
+
+If you're in the wrong category, the story will feel like it's about some other company. Because it is.
+
+That's usually enough to tell you which side of the fence the vendor grew up on, and whether it's the same side you're standing on.

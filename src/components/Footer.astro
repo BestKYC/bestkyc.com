@@ -1,0 +1,112 @@
+---
+import { SITE, CATEGORIES } from '../consts';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t border-[var(--color-rule)] bg-[var(--color-paper)]">
+  <div class="mx-auto max-w-6xl px-6 py-16">
+    <div class="grid gap-12 sm:grid-cols-[1.25fr_1fr_1fr]">
+      <div>
+        <a href="/" class="flex items-center gap-3" aria-label={`${SITE.name} home`}>
+          <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
+            <rect width="32" height="32" rx="6" fill="var(--color-brand-700)" />
+            <g fill="var(--color-paper)">
+              <rect x="5" y="6" width="4" height="20" rx="0.5" />
+              <rect x="14" y="11" width="4" height="15" rx="0.5" />
+              <rect x="23" y="18" width="4" height="8" rx="0.5" />
+            </g>
+          </svg>
+          <span class="font-serif text-lg font-medium tracking-tight">BestKYC</span>
+        </a>
+        <p class="mt-4 max-w-sm text-sm text-[var(--color-ink-muted)]">
+          We rank the software that verifies identities, companies, and
+          transactions. Written by the people who already pick it for a living.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+          Categories
+        </h2>
+        <ul class="mt-4 space-y-2 text-sm" role="list">
+          {
+            Object.values(CATEGORIES).map((c) => (
+              <li>
+                <a
+                  href={`/${c.slug}`}
+                  class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+                >
+                  {c.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+          Resources
+        </h2>
+        <ul class="mt-4 space-y-2 text-sm" role="list">
+          <li>
+            <a
+              href="/why"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              Why this site exists
+            </a>
+          </li>
+          <li>
+            <a
+              href="/rankings"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              Rankings
+            </a>
+          </li>
+          <li>
+            <a
+              href="/methodology"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              Methodology
+            </a>
+          </li>
+          <li>
+            <a
+              href="/disclosures"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              Disclosures
+            </a>
+          </li>
+          <li>
+            <a
+              href="/rss.xml"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              RSS feed
+            </a>
+          </li>
+          <li>
+            <a
+              href="/contact"
+              class="text-[var(--color-ink-muted)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col justify-between gap-2 border-t border-[var(--color-rule)] pt-6 font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] sm:flex-row"
+    >
+      <span>© {year} {SITE.name}</span>
+      <span>{SITE.domain}</span>
+    </div>
+  </div>
+</footer>

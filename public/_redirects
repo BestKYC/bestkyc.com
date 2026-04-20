@@ -1,0 +1,2 @@
+# Apex -> www (safety net; also configure at DNS/CF level)
+https://bestkyc.com/*  https://www.bestkyc.com/:splat  301!

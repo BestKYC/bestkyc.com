@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../utils/schema';
+import whyImage from '../content/articles/images/why_this_site_exist.png';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Why', href: '/why' },
+];
+
+const imageAlt = 'BestKYC — why this site exists';
+---
+
+<BaseLayout
+  title="Why"
+  description="BestKYC was built by the compliance officers, fraud prevention specialists, and product owners who evaluate this software for a living — because the reference we needed didn't exist."
+  image={whyImage.src}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Why"
+    title="Why this site exists."
+    lede="We were going to link to a good one. There isn't a good one. So we wrote this."
+  />
+
+  <article class="mx-auto max-w-3xl px-6 py-16 prose-editorial">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <figure class="mt-10">
+      <Image
+        src={whyImage}
+        alt={imageAlt}
+        widths={[640, 960, 1280, 1456]}
+        sizes="(min-width: 768px) 768px, 100vw"
+        class="w-full"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+
+    <p class="mt-10 text-[var(--color-ink-muted)]">
+      Type "best KYC software" into Google. Or "best KYB platform." Or "best
+      fraud prevention tool." Count the first-page results that aren't
+      themselves a vendor's website ranking themselves #1.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      There aren't many. Most of the top results are vendors listing
+      themselves as the leader in the category they exist to sell into. The
+      pages that aren't vendor sites are usually content farms that accept
+      money to put vendors at the top of the list. Either way, the list isn't
+      useful.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      The review aggregator sites don't fix this. G2, Gartner Peer Insights,
+      and the rest run on a model where vendors hand out gift cards in
+      exchange for reviews. They don't ask everyone. They ask the customers
+      their customer success team already knows are happy, or the customers
+      who recently asked for a discount or some other favor. The reviews are
+      real — they were written by real customers — but the sample isn't
+      random. You're not reading what customers think. You're reading what
+      the customers the vendor picked, contacted, and incentivized think.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      That doesn't make the individual reviews fake. It makes the average
+      meaningless.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      The people who would actually be useful at answering the question don't
+      typically write the results up. They're busy. They're compliance
+      officers, fraud prevention specialists, and product owners. Their job
+      is to pick this software, integrate it, live with the choice for a few
+      years, and then start the process over with a different requirement.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      That's who we are. We pick this software for work, again and again. A
+      new project starts, and one of us has to evaluate the market for the
+      third or fourth time in two years. We take notes. We argue with each
+      other in Slack about which vendor handled which edge case. We end up
+      with opinions. And then we move on to the next project.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      This site is what happens if we stop moving on.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      We decided to share the notes. The vendor shortlists we already write
+      for our own teams. The call feedback. The pricing surprises. The
+      compliance near-misses. The integrations that took six weeks longer
+      than the SDR promised. Not because we want to run a media business —
+      we don't — but because the version of ourselves that was picking this
+      software for the first time would have paid real money to read it, and
+      instead we were reading vendor marketing pages.
+    </p>
+
+    <p class="mt-4 text-[var(--color-ink-muted)]">
+      So: that's what this site is. The reference we're building because the
+      reference we needed didn't exist.
+    </p>
+  </article>
+</BaseLayout>

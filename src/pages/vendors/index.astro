@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Badge from '../../components/Badge.astro';
+import { CATEGORIES, type CategorySlug } from '../../consts';
+import { breadcrumbSchema } from '../../utils/schema';
+
+const vendors = (await getCollection('vendors')).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Vendors', href: '/vendors' },
+];
+---
+
+<BaseLayout
+  title="Vendors"
+  description="Every vendor we cover — KYC, KYB, AML, and fraud prevention software."
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Vendors"
+    title="Every vendor we cover."
+    lede="We start with the platforms our team has evaluated, bought, or been offered. The list will keep growing. If a vendor is missing, tell us."
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <ul class="mt-10 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]" role="list">
+      {
+        vendors.map((v) => (
+          <li>
+            <a
+              href={`/vendors/${v.id}`}
+              class="group grid gap-3 py-8 transition-colors hover:bg-[var(--color-surface)] sm:grid-cols-[1.5fr_1fr]"
+            >
+              <div>
+                <h2 class="font-serif text-2xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+                  {v.data.name}
+                </h2>
+                <p class="mt-2 max-w-xl text-[var(--color-ink-muted)]">
+                  {v.data.summary}
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  {v.data.categories.map((slug) => (
+                    <Badge>{CATEGORIES[slug as CategorySlug].label}</Badge>
+                  ))}
+                </div>
+              </div>
+              <dl class="flex items-start justify-end gap-6 text-sm text-[var(--color-ink-subtle)]">
+                {v.data.headquarters && (
+                  <div>
+                    <dt class="font-mono text-xs uppercase tracking-wider">HQ</dt>
+                    <dd class="mt-1 text-[var(--color-ink-muted)]">{v.data.headquarters}</dd>
+                  </div>
+                )}
+                {v.data.foundedYear && (
+                  <div>
+                    <dt class="font-mono text-xs uppercase tracking-wider">Founded</dt>
+                    <dd class="mt-1 text-[var(--color-ink-muted)]">{v.data.foundedYear}</dd>
+                  </div>
+                )}
+              </dl>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

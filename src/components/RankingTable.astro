@@ -1,0 +1,83 @@
+---
+import Badge from './Badge.astro';
+import Score from './Score.astro';
+
+export interface RankingEntry {
+  rank: number;
+  vendor: string;
+  pitch: string;
+  bestFor?: string;
+  pricing?: string;
+  score?: number;
+  href: string;
+  pick?: 'editors' | 'best-value' | 'best-enterprise';
+  ctaLabel?: string;
+}
+
+interface Props {
+  entries: RankingEntry[];
+}
+
+const { entries } = Astro.props;
+
+const pickLabels: Record<NonNullable<RankingEntry['pick']>, string> = {
+  editors: "Editor's Pick",
+  'best-value': 'Best Value',
+  'best-enterprise': 'Best Enterprise',
+};
+---
+
+<ol class="divide-y divide-[var(--color-rule)]" role="list">
+  {
+    entries.map((e) => (
+      <li>
+        <a
+          href={e.href}
+          class="group grid grid-cols-[auto_1fr_auto] items-start gap-6 py-8 transition-colors hover:bg-[var(--color-surface)]"
+        >
+          <span
+            class="font-serif text-4xl font-medium tabular-nums text-[var(--color-ink-subtle)] group-hover:text-[var(--color-brand-700)]"
+            aria-hidden="true"
+          >
+            {String(e.rank).padStart(2, '0')}
+          </span>
+
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="font-serif text-2xl font-medium tracking-tight text-[var(--color-ink)]">
+                {e.vendor}
+              </h3>
+              {e.pick && <Badge tone="accent">{pickLabels[e.pick]}</Badge>}
+            </div>
+            <p class="mt-2 max-w-xl text-[var(--color-ink-muted)]">
+              {e.pitch}
+            </p>
+            {(e.bestFor || e.pricing) && (
+              <dl class="mt-3 flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-[var(--color-ink-subtle)]">
+                {e.bestFor && (
+                  <div class="flex gap-2">
+                    <dt class="uppercase tracking-wider">Best for</dt>
+                    <dd class="text-[var(--color-ink-muted)]">{e.bestFor}</dd>
+                  </div>
+                )}
+                {e.pricing && (
+                  <div class="flex gap-2">
+                    <dt class="uppercase tracking-wider">Pricing</dt>
+                    <dd class="text-[var(--color-ink-muted)]">{e.pricing}</dd>
+                  </div>
+                )}
+              </dl>
+            )}
+          </div>
+
+          <div class="flex flex-col items-end gap-3">
+            {e.score !== undefined && <Score value={e.score} />}
+            <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] group-hover:text-[var(--color-brand-700)]">
+              {e.ctaLabel ?? 'See vendor →'}
+            </span>
+          </div>
+        </a>
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../utils/schema';
+import { SITE } from '../consts';
+import contactImage from '../content/articles/images/contact.png';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const email = `hello@${SITE.domain}`;
+const imageAlt = 'BestKYC — contact';
+---
+
+<BaseLayout
+  title="Contact"
+  description={`How to reach ${SITE.name}.`}
+  image={contactImage.src}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Contact"
+    title="Get in touch."
+    lede="We read everything. Factual corrections and documented vendor claims get answered first. Pitches get answered when they get answered."
+  />
+
+  <figure class="mx-auto mt-10 max-w-3xl px-6">
+    <Image
+      src={contactImage}
+      alt={imageAlt}
+      widths={[640, 960, 1280, 1456]}
+      sizes="(min-width: 768px) 768px, 100vw"
+      class="w-full"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </figure>
+
+  <section class="mx-auto max-w-3xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    <div class="mt-10 border-y border-[var(--color-rule)] py-10">
+      <p class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-subtle)]">
+        One inbox for everything
+      </p>
+      <a
+        href={`mailto:${email}`}
+        class="mt-4 inline-block font-serif text-3xl font-medium tracking-tight text-[var(--color-brand-700)] underline underline-offset-4 transition-colors hover:text-[var(--color-brand-900)]"
+      >
+        {email}
+      </a>
+      <p class="mt-6 max-w-2xl text-[var(--color-ink-muted)]">
+        Use it for editorial tips and corrections, vendor inquiries and
+        factual updates to your own review, and press — citations, interview
+        requests, licensing a chart or a number. The team is small enough that
+        splitting the inbox wouldn't help anyone.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

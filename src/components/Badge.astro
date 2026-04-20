@@ -1,0 +1,24 @@
+---
+interface Props {
+  tone?: 'neutral' | 'good' | 'warn' | 'bad' | 'accent';
+  class?: string;
+}
+
+const { tone = 'neutral', class: className = '' } = Astro.props;
+
+const tones: Record<NonNullable<Props['tone']>, string> = {
+  neutral:
+    'border-[var(--color-rule)] bg-[var(--color-surface)] text-[var(--color-ink-muted)]',
+  good: 'border-transparent bg-[color-mix(in_oklch,var(--color-good)_15%,var(--color-paper))] text-[var(--color-good)]',
+  warn: 'border-transparent bg-[color-mix(in_oklch,var(--color-warn)_18%,var(--color-paper))] text-[color-mix(in_oklch,var(--color-warn)_70%,black)]',
+  bad: 'border-transparent bg-[color-mix(in_oklch,var(--color-bad)_15%,var(--color-paper))] text-[var(--color-bad)]',
+  accent:
+    'border-transparent bg-[color-mix(in_oklch,var(--color-accent-500)_20%,var(--color-paper))] text-[var(--color-accent-700)]',
+};
+---
+
+<span
+  class={`inline-flex items-center rounded-xs border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider ${tones[tone]} ${className}`}
+>
+  <slot />
+</span>

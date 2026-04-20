@@ -1,0 +1,68 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  primaryHref?: string;
+  primaryLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  primaryHref,
+  primaryLabel,
+  secondaryHref,
+  secondaryLabel,
+} = Astro.props;
+---
+
+<section class="border-b border-[var(--color-rule)]">
+  <div class="mx-auto max-w-4xl px-6 py-20 sm:py-28">
+    {
+      eyebrow && (
+        <p class="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-ink-muted)]">
+          {eyebrow}
+        </p>
+      )
+    }
+    <h1
+      class="font-serif font-medium text-[length:var(--text-display)] leading-[var(--text-display--line-height)] tracking-[var(--text-display--letter-spacing)] text-[var(--color-ink)]"
+    >
+      <slot name="title">{title}</slot>
+    </h1>
+    {
+      lede && (
+        <p class="mt-6 max-w-2xl text-[length:var(--text-lede)] leading-[var(--text-lede--line-height)] text-[var(--color-ink-muted)]">
+          {lede}
+        </p>
+      )
+    }
+    {
+      (primaryHref || secondaryHref) && (
+        <div class="mt-10 flex flex-wrap gap-3">
+          {primaryHref && (
+            <a
+              href={primaryHref}
+              class="inline-flex items-center rounded-sm bg-[var(--color-brand-700)] px-5 py-3 text-sm font-medium text-[var(--color-paper)] transition-colors hover:bg-[var(--color-brand-900)]"
+            >
+              {primaryLabel}
+              <span aria-hidden="true" class="ml-2">→</span>
+            </a>
+          )}
+          {secondaryHref && (
+            <a
+              href={secondaryHref}
+              class="inline-flex items-center rounded-sm border border-[var(--color-rule)] px-5 py-3 text-sm font-medium text-[var(--color-ink)] transition-colors hover:border-[var(--color-ink)]"
+            >
+              {secondaryLabel}
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

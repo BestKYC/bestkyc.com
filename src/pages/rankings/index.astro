@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Badge from '../../components/Badge.astro';
+import { CATEGORIES, type CategorySlug } from '../../consts';
+import { breadcrumbSchema } from '../../utils/schema';
+
+const rankings = (
+  await getCollection('rankings', ({ data }) => !data.draft)
+).sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Rankings', href: '/rankings' },
+];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title="Rankings"
+  description="Every ranking we've published, across KYC, KYB, AML, and fraud prevention."
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <Hero
+    eyebrow="Rankings"
+    title="Every ranking."
+    lede="One per category, per year. Each one was written for a project we were picking software for, then turned into something public."
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <Breadcrumbs crumbs={crumbs} />
+
+    {
+      rankings.length === 0 ? (
+        <p class="mt-10 text-[var(--color-ink-muted)]">
+          No published rankings yet.
+        </p>
+      ) : (
+        <ol
+          class="mt-10 divide-y divide-[var(--color-rule)] border-y border-[var(--color-rule)]"
+          role="list"
+        >
+          {rankings.map((r) => (
+            <li>
+              <a
+                href={`/rankings/${r.id}`}
+                class="group grid gap-2 py-8 transition-colors hover:bg-[var(--color-surface)]"
+              >
+                <div class="flex flex-wrap items-center gap-2">
+                  <Badge>{CATEGORIES[r.data.category as CategorySlug].label}</Badge>
+                  <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                    {fmt(r.data.published)}
+                  </span>
+                </div>
+                <h2 class="font-serif text-2xl font-medium tracking-tight text-[var(--color-ink)] group-hover:text-[var(--color-brand-700)]">
+                  {r.data.title}
+                </h2>
+                <p class="max-w-2xl text-[var(--color-ink-muted)]">
+                  {r.data.description}
+                </p>
+                <p class="mt-2 font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+                  {r.data.entries.length} vendors
+                </p>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </section>
+</BaseLayout>

@@ -1,0 +1,40 @@
+# Astro / Node
+node_modules/
+dist/
+.astro/
+.output/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Legacy (not used in this project)
+.venv/
+__pycache__/
+*.pyc
+
+# Internal editorial / tooling (not for public repo)
+.claude/
+CLAUDE.md
+Tone/

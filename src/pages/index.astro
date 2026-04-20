@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Badge from '../components/Badge.astro';
+import { SITE, CATEGORIES } from '../consts';
+import homepageImage from '../content/articles/images/homepage.png';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+};
+
+const imageAlt = 'BestKYC — rankings of KYC, KYB, AML, and fraud prevention software';
+---
+
+<BaseLayout image={homepageImage.src} jsonLd={jsonLd}>
+  <Hero
+    eyebrow="Issue 01 · Spring 2026"
+    title="We rank KYC, KYB, AML, and fraud prevention software."
+    lede="Most compliance teams read through a hundred vendors before picking one. So have we, many times over. These are the notes we wish we'd had."
+    primaryHref="/rankings/best-kyc-software-2026"
+    primaryLabel="Read the 2026 KYC ranking"
+    secondaryHref="/methodology"
+    secondaryLabel="How we evaluate"
+  />
+
+  <figure class="mx-auto mt-10 max-w-5xl px-6">
+    <Image
+      src={homepageImage}
+      alt={imageAlt}
+      widths={[640, 960, 1280, 1456]}
+      sizes="(min-width: 1024px) 1024px, 100vw"
+      class="w-full"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </figure>
+
+  <section class="mx-auto max-w-4xl px-6 py-20">
+    <header class="mb-10 flex items-end justify-between border-b border-[var(--color-rule)] pb-4">
+      <h2 class="font-serif text-2xl font-medium tracking-tight">What we rank</h2>
+      <span class="font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)]">
+        {Object.keys(CATEGORIES).length} beats
+      </span>
+    </header>
+
+    <div class="grid gap-px bg-[var(--color-rule)] sm:grid-cols-2">
+      {
+        Object.values(CATEGORIES).map((c) => (
+          <a
+            href={`/${c.slug}`}
+            class="group block bg-[var(--color-paper)] p-6 transition-colors hover:bg-[var(--color-surface)]"
+          >
+            <div class="flex items-center gap-3">
+              <h3 class="font-serif text-xl font-medium tracking-tight text-[var(--color-ink)]">
+                {c.label}
+              </h3>
+              <Badge>{c.slug}</Badge>
+            </div>
+            <p class="mt-2 text-sm text-[var(--color-ink-muted)]">
+              {c.description}
+            </p>
+            <span class="mt-4 inline-block font-mono text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] group-hover:text-[var(--color-brand-700)]">
+              See the ranking →
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
