@@ -31,6 +31,8 @@ export const GET: APIRoute = async (context) => {
     }),
   );
 
+  const feedUrl = new URL('/rss.xml', context.site ?? SITE.url).toString();
+
   return rss({
     title: SITE.title,
     description: SITE.description,
@@ -38,6 +40,7 @@ export const GET: APIRoute = async (context) => {
     items: [...reviews, ...rankings, ...articles].sort(
       (a, b) => b.pubDate.getTime() - a.pubDate.getTime(),
     ),
-    customData: `<language>en-us</language>`,
+    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    customData: `<language>en-us</language><atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />`,
   });
 };
