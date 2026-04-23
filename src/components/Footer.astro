@@ -9,14 +9,14 @@ const year = new Date().getFullYear();
     <div class="grid gap-12 sm:grid-cols-[1.25fr_1fr_1fr]">
       <div>
         <a href="/" class="flex items-center gap-3" aria-label={`${SITE.name} home`}>
-          <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
-            <rect width="32" height="32" rx="6" fill="var(--color-brand-700)" />
-            <g fill="var(--color-paper)">
-              <rect x="5" y="6" width="4" height="20" rx="0.5" />
-              <rect x="14" y="11" width="4" height="15" rx="0.5" />
-              <rect x="23" y="18" width="4" height="8" rx="0.5" />
-            </g>
-          </svg>
+          <img
+            src="/favicon.svg"
+            alt=""
+            width="28"
+            height="28"
+            loading="lazy"
+            decoding="async"
+          />
           <span class="font-serif text-lg font-medium tracking-tight">BestKYC</span>
         </a>
         <p class="mt-4 max-w-sm text-sm text-[var(--color-ink-muted)]">
