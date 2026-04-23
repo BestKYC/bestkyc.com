@@ -1,0 +1,85 @@
+---
+title: "ID verification by industry: regulated vs non-regulated"
+dek: "Two different products. Same name. The line between them is your regulator."
+author: "BestKYC Editorial"
+categories: ["kyc", "fraud"]
+image: ./images/id-verification-by-industry.png
+imageAlt: "BestKYC — ID verification by industry: regulated vs non-regulated"
+published: 2026-04-23
+---
+
+Most teams shopping for ID verification software ask the wrong first question. They start with "which is best?" The right first question is "what industry am I in?" — because that decides whether you're shopping for ID verification at all, or for KYC compliance with an ID verification step inside it.
+
+Same software, on the surface. Different products underneath.
+
+Two buckets. Either there's a regulator telling you what your ID verification has to look like, or there isn't. If there is, your shortlist is whatever passes audit. If there isn't, your shortlist is whatever moves your conversion and chargeback metrics in the right direction. The vendors on those two shortlists overlap — but you'll buy from them for opposite reasons.
+
+## Regulated industries
+
+Financial services, banking, crypto exchanges, gambling, insurance, regulated lending. The list isn't long, but it covers a lot of the buying.
+
+In each of these, there's a regulator (BaFin, FCA, FINMA, MAS, UKGC, MGA, the SEC, FinCEN, dozens more) that has written down — sometimes in painful detail — what counts as having verified a customer's identity. Rules differ by jurisdiction, by license type, by transaction size, sometimes by customer risk tier. They have one thing in common: if you can't show the regulator a paper trail meeting their standard, you don't keep your license.
+
+In a regulated industry, the ID verification step inside your onboarding flow is not really an ID verification step. It is a KYC compliance step that happens to use ID verification software to satisfy part of the requirement. The vendor needs to:
+
+- Cover the document types your regulator accepts as proof of identity (often a specific list — passports, national ID cards, driving licenses with named security features).
+- Produce an audit trail your compliance team can hand to the regulator without redaction.
+- Hold the certifications your regulator expects of vendors handling identity data — SOC 2 Type II, ISO 27001, sometimes regional ones.
+- Integrate with the rest of the KYC stack: sanctions, PEPs, adverse media, ongoing monitoring.
+- Adapt to new rules the regulator publishes, often on short notice.
+
+Conversion still matters. False rejects are still expensive. But none of that breaks ties. The tie-breaker is: does this hold up at audit. We wrote about that distinction in detail in [KYC vs ID verification: the same software, for different reasons](/articles/kyc-vs-id-verification).
+
+## Non-regulated industries
+
+Ecommerce, marketplaces, logistics, transportation, education, most of healthcare, social platforms, video gaming, dating, the sharing economy, and most B2B SaaS. No regulator is telling these companies they have to verify a customer's identity in any particular way. They're doing it because they have a business problem ID verification can solve — and the choice of software is downstream of that problem.
+
+The business problems vary:
+
+- **Ecommerce:** chargeback prevention, age-restricted product compliance (alcohol, tobacco, vaping, fireworks), high-value order protection.
+- **Marketplaces:** seller verification, fake-account prevention, building enough trust between strangers to make the transaction happen.
+- **Healthcare:** patient identity for telehealth, provider credentialing. HIPAA governs how the data is handled, not how identity must be verified.
+- **Education:** test-taker identity for remote exams, certifications.
+- **Logistics and transportation:** driver verification, contractor onboarding, insurance liability reduction.
+- **Video gaming:** age verification, parental consent (COPPA in the US, UK Online Safety Act, others).
+- **Dating and social:** age verification, fake-profile defence, account takeover protection.
+
+What they share: there's no specific compliance bar to clear. The vendor doesn't need to pass an audit. It needs to make the business problem smaller without making the user experience worse.
+
+So the tie-breakers shift. In a non-regulated industry, the questions are:
+
+- Does the flow convert? Drop-off at each step is the metric, not paper-trail completeness.
+- Does it catch the fraud you actually have? An ecommerce platform with a chargeback problem doesn't need a regulator-grade audit trail. It needs sharp signals on synthetic IDs and stolen-card-plus-stolen-document combinations.
+- Is it fast enough that real users don't bail? Mobile flow on a mid-range Android with a bad camera, ten seconds end-to-end if possible.
+- Does it scale to your volume without per-verification pricing eating the margin?
+
+Certifications still matter — but for a different reason. Your customers (or your enterprise B2B prospects) want to know you handle identity data responsibly, not because a regulator told you to.
+
+## Industries on the edge
+
+The cleanest mental model is two buckets, but a few industries straddle the line.
+
+**Ecommerce above certain thresholds.** A platform processing high-value transactions, or operating in jurisdictions with specific consumer protection rules (the UK's Online Safety Act, EU age-verification requirements for adult content, US state-level vaping laws), ends up with quasi-regulatory pressure on its ID verification. Not as heavy as a bank, but heavier than a typical Shopify store.
+
+**Healthcare in some sub-categories.** Telehealth that prescribes controlled substances brings in DEA and state pharmacy board oversight in the US. Provider directories that bill Medicare or Medicaid bring in CMS rules. The data layer (HIPAA) is privacy-only, but the workflow can be regulated.
+
+**iGaming vs video gaming.** Non-gambling video games are non-regulated for ID purposes (age gating only). Real-money gambling is heavily regulated — UKGC, MGA, state-level US gaming commissions — and behaves like financial services for KYC purposes. The shared word "gaming" hides the gap.
+
+**B2B SaaS handling sensitive workflows.** Most B2B is non-regulated, but SaaS platforms used by banks, insurers, or law enforcement inherit some compliance pressure from their customers. Procurement teams ask for the same security artifacts a regulator would.
+
+If your company sits in one of these edge zones, default to the regulated playbook. The cost of over-buying compliance early is much smaller than the cost of being told later that you should have.
+
+## Two questions, two shortlists
+
+The shopping question reduces to:
+
+1. Is there a regulator that has written down what my ID verification has to look like?
+2. If yes, what does that look like in my specific jurisdiction?
+
+If the answer to (1) is no, you're free to optimize for the business outcome — chargebacks, conversion, fraud catch rate. The vendors that win on those metrics often aren't the same as the ones that win at compliance audits, even when they're the same company.
+
+If the answer to (1) is yes, your filter is binary. Vendors either meet your regulator's standard or they don't. Optimize for the business outcome inside that filtered list — never outside it.
+
+Most teams skip the first question and end up shopping by features. They find out at the worst possible moment that the vendor that ranked highest by feature comparison doesn't pass their auditor's review.
+
+Industry is one axis. The other is your company's stage of growth — what a Series A startup needs from ID verification software looks very different from what a regulated multinational needs. We wrote about that separately, in [picking ID verification software at startup, growth, and enterprise stages](/articles/id-verification-software-by-stage).
